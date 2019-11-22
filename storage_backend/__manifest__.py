@@ -18,7 +18,7 @@
             # "boto",
         ]
     },
-    "depends": ["base", "keychain", "component"],
+    "depends": ["base", "component", "server_environment"],
     "data": [
         "views/backend_storage_view.xml",
         "data/data.xml",
