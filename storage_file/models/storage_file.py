@@ -59,12 +59,11 @@ class StorageFile(models.Model):
     file_type = fields.Selection([])
 
     _sql_constraints = [
-        ("url_uniq", "unique(url)", "The url must be uniq"),
         (
             "path_uniq",
             "unique(relative_path, backend_id)",
             "The private path must be uniq per backend",
-        ),
+        )
     ]
 
     def write(self, vals):
