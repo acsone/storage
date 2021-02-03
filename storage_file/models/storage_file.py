@@ -31,11 +31,9 @@ class StorageFile(models.Model):
     backend_id = fields.Many2one(
         "storage.backend", "Storage", index=True, required=True
     )
-    url = fields.Char(
-        compute="_compute_url",
-        compute_sudo=True,
-        store=True,
-        help="HTTP accessible path to the file",
+    url = fields.Char(compute="_compute_url", help="HTTP accessible path to the file")
+    slug = fields.Char(
+        compute="_compute_slug", help="Slug-ified name with ID for URL", store=True
     )
     relative_path = fields.Char(readonly=True, help="Relative location for backend")
     file_size = fields.Integer("File Size")
@@ -83,6 +81,11 @@ class StorageFile(models.Model):
         for record in self:
             record.human_file_size = human_size(record.file_size)
 
+    @api.depends("filename", "extension")
+    def _compute_slug(self):
+        for record in self:
+            record.slug = record._slugify_name_with_id()
+
     def _slugify_name_with_id(self):
         return u"{}{}".format(
             slugify(u"{}-{}".format(self.filename, self.id)), self.extension
@@ -102,7 +105,7 @@ class StorageFile(models.Model):
         if strategy == "hash":
             return checksum[:2] + "/" + checksum
         elif strategy == "name_with_id":
-            return self._slugify_name_with_id()
+            return self.slug
 
     def _prepare_meta_for_file(self):
         bin_data = base64.b64decode(self.data)
@@ -130,20 +133,16 @@ class StorageFile(models.Model):
             else:
                 rec.data = None
 
-    @api.depends("backend_id.served_by", "backend_id.base_url", "relative_path")
+    @api.depends(
+        "relative_path", "backend_id.base_url_for_files",
+    )
     def _compute_url(self):
         for record in self:
-            if record.backend_id.served_by == "odoo":
-                base_url = (
-                    self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-                )
-                record.url = u"{}/storage.file/{}".format(
-                    base_url, record._slugify_name_with_id()
-                )
-            else:
-                record.url = "{}/{}".format(
-                    record.backend_id.base_url, record.relative_path
-                )
+            record.url = record._get_url()
+
+    def _get_url(self):
+        """Retrieve file URL based on backend params."""
+        return self.backend_id._get_url_for_file(self)
 
     @api.depends("name")
     def _compute_extract_filename(self):

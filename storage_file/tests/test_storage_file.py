@@ -60,6 +60,46 @@ class StorageFileCase(TransactionComponentCase):
         )
         self.assertEqual(stfile, stfile2)
 
+<<<<<<< HEAD
+=======
+    def test_slug(self):
+        stfile = self._create_storage_file()
+        self.assertEqual(
+            stfile.slug, "test-of-my_file-{}.txt".format(stfile.id),
+        )
+        stfile.name = "Name has changed.png"
+        self.assertEqual(
+            stfile.slug, "name-has-changed-{}.png".format(stfile.id),
+        )
+
+    def test_url(self):
+        stfile = self._create_storage_file()
+        params = self.env["ir.config_parameter"].sudo()
+        base_url = params.get_param("web.base.url")
+        # served by odoo
+        self.assertEqual(
+            stfile.url,
+            "{}/storage.file/test-of-my_file-{}.txt".format(base_url, stfile.id),
+        )
+        # served by external
+        stfile.backend_id.update(
+            {
+                "served_by": "external",
+                "base_url": "https://foo.com",
+                "directory_path": "baz",
+            }
+        )
+        # path not included
+        self.assertEqual(
+            stfile.url, "https://foo.com/test-of-my_file-{}.txt".format(stfile.id)
+        )
+        # path included
+        stfile.backend_id.url_include_directory_path = True
+        self.assertEqual(
+            stfile.url, "https://foo.com/baz/test-of-my_file-{}.txt".format(stfile.id)
+        )
+
+>>>>>>> 058d118... storage_file: boost url compute
     def test_create_store_with_hash(self):
         self.backend.filename_strategy = "hash"
         stfile = self._create_storage_file()
@@ -208,3 +248,11 @@ class StorageFileCase(TransactionComponentCase):
                 ),
                 storage_file.backend_id.id,
             )
+<<<<<<< HEAD
+=======
+
+    def test_empty(self):
+        # get_url is called on new records
+        empty = self.env["storage.file"].new({})._get_url()
+        self.assertEqual(empty, "")
+>>>>>>> 058d118... storage_file: boost url compute
