@@ -60,8 +60,6 @@ class StorageFileCase(TransactionComponentCase):
         )
         self.assertEqual(stfile, stfile2)
 
-<<<<<<< HEAD
-=======
     def test_slug(self):
         stfile = self._create_storage_file()
         self.assertEqual(
@@ -99,7 +97,6 @@ class StorageFileCase(TransactionComponentCase):
             stfile.url, "https://foo.com/baz/test-of-my_file-{}.txt".format(stfile.id)
         )
 
->>>>>>> 058d118... storage_file: boost url compute
     def test_create_store_with_hash(self):
         self.backend.filename_strategy = "hash"
         stfile = self._create_storage_file()
@@ -248,11 +245,8 @@ class StorageFileCase(TransactionComponentCase):
                 ),
                 storage_file.backend_id.id,
             )
-<<<<<<< HEAD
-=======
 
     def test_empty(self):
         # get_url is called on new records
         empty = self.env["storage.file"].new({})._get_url()
         self.assertEqual(empty, "")
->>>>>>> 058d118... storage_file: boost url compute
