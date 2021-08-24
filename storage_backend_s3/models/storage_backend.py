@@ -46,7 +46,7 @@ class StorageBackend(models.Model):
 
     @property
     def _server_env_fields(self):
-        env_fields = super()._server_env_fields
+        env_fields = super(StorageBackend, self)._server_env_fields
         env_fields.update({
             "aws_host": {},
             "aws_bucket": {},

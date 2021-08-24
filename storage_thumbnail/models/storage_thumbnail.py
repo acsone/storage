@@ -73,7 +73,7 @@ class StorageThumbnail(models.Model):
         vals["file_type"] = self._default_file_type
         if "backend_id" not in vals:
             vals["backend_id"] = self._get_default_backend_id()
-        return super().create(vals)
+        return super(StorageThumbnail, self).create(vals)
 
     def unlink(self):
         files = self.mapped("file_id")
