@@ -10,7 +10,7 @@ odoo.define('storage_image.image_handle', function (require) {
         render: function () {
             var res = this._super.apply(this, arguments);
             var self = this;
-            if (!self.options["read_only_mode"]) {
+            if (!self.options["read_only_mode"] && self.model === 'product.image.relation') {
                 if (self.options["creatable"]) {
                     this.$el.css('min-height', '50px')
                     this.$el.on('dragenter dragover', function (e) {
