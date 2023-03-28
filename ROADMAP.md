@@ -95,17 +95,119 @@ stored for all the attachments.
 ### fs_file
 
 The `storage.file` addon will be replaced by the new `fs_file` addon. This addon will
-provide 2 new specialized field types: `FSFile()` and `FSFileName`. These new field
-types will allow you to add fields on your models to store a file content into an
-external file system. Compared to the `Binary` field type, the `FSFile()` field will
-require 2 additional parameters:
+provide 1 new specialized field type: `FSFile()` This new field will be bases on the
+`Binary` field type and enforce the use of the `ir.attachment` model to store the file
+content.
+
+The value of the field will be an object implementing the `io.RawIOBase` interface. This
+object will also provides additional properties to access to access to the name (rw),
+mimetype(r), size(r), url(r), internal_url(r) and the attachment record(r). It will also
+implements the `__set_item__` method to allow to makes the following syntax possible:
+
+```python
+my_file = record.fs_file
+my_file = b"content"
+my_file.name = "new_name.txt"
+```
+
+The implementation of this class will use an `io.BytesIO` object as buffer to store
+content in memory and act as a wrapper around this buffer to detect when the content is
+modified and let know the field implementation that the content has been modified.
+
+```python
+import io
+from odoo.addons.base.models.ir_attachment import IrAttachment
+
+class FSFileBytesIO(io.RawIOBase):
+    def __init__(self, attachment: IrAttachment = None) -> None:
+        self._is_new = attachment is None
+        self.buffer = io.BytesIO(attachment.raw if attachment else b"")
+        self.dirty = False
+        self._attachment = attachment
+
+    def read(self, size: int = -1) -> bytes:
+        return self.buffer.read(size)
+
+    def write(self, b: bytes) -> int:
+        self.dirty = True
+        return self.buffer.write(b)
+
+    def readinto(self, b: bytearray) -> int:
+        return self.buffer.readinto(b)
+
+    def getvalue(self) -> bytes:
+        current_pos = self.buffer.tell()
+        self.buffer.seek(0)
+        value = self.buffer.read()
+        self.buffer.seek(current_pos)
+        return value
+
+    @property
+    def name(self) -> str | None:
+        return self.buffer.name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        # the name should only be updatable while the file is not yet stored
+        # TODO, we could also allow to update the name of the file and rename
+        # the file in the external file system
+        if self._is_new:
+          self.buffer.name = value
+        else:
+          raise ValueError(
+              "The name of the file can only be updated while the file is not "
+              "yet stored")
+    @property
+    def mimetype(self) -> str | None:
+        return self._attachment.mimetype if self._attachment else None
+
+    @property
+    def size(self) -> int:
+        return self._attachment.size if self._attachment else 0
+
+    @property
+    def url(self) -> str | None:
+        return self._attachment.url if self._attachment else None
+
+    @property
+    def internal_url(self) -> str | None:
+        return self._attachment.internal_url if self._attachment else None
+
+    @property
+    def attachment(self) -> IrAttachment | None:
+        return self._attachment
+
+    def __getattr__(self, attr: str):
+        return getattr(self.buffer, attr)
+
+    def __setitem__(self, key: int, value: bytes) -> None:
+        self.dirty = True
+        self.buffer.seek(key)
+        self.buffer.write(value)
+
+```
+
+Such an approach will allow to use the `FSFile()` field type in the same way as the any
+other io stream and ease its usage with any library that can work with io streams. But
+it will also support a naive usage like the following:
+
+```python
+# fs_file = FSFile(string="File", storage_code="fs_s3")
+my_file = record.fs_file
+my_file = b"content"
+```
+
+To initialize a not yet initialized `FSFile()` field with a new file the following
+syntax can be used:
+
+```python
+record.fs_file = b"content"
+```
+
+Compared to the `Binary` field type, the `FSFile()` field will require 1 additional
+parameter:
 
 - `storage_code`: the code of the file system where the file content will be stored.
-- `field_filename`: the name of the `FSFileName` field.
-
-The `FSFileName` field will be used to store the name of the file. It will be act as a
-related field on the `name` field of the `ir.attachment` record behind the `FSFile()`
-field.
 
 To avoid useless resources consumption when the field content is retrieved to be
 displayed into the UI, the method `convert_to_read` will be overridden to return a url
@@ -122,19 +224,43 @@ To avoid to pollute our file system with files uploaded but not linked to any re
 the database due to a transaction rollback or some troubles when a form is submitted, a
 GC mechanism will be implemented to delete orphan files.
 
-The implementation of the `FSFile` field will be base on the `Binary` field but will
-always put into the context the `storage_code` and `field_filename` to allows. Theses 2
-parameters will be used by the `fs_attachment` addon to select the file system where the
-file content will be stored and to set the name of the file.
+The implementation of the `FSFile` field will be based on the `Binary` field but will
+always put into the context the `storage_code`. This parameter will be used by the
+`fs_attachment` addon to select the file system where the file content will be stored.
+Since the fields.Binary field doesn't provide hooks to enrich the value dict used to
+create or update the `ir.attachment` record, the context could be used to provide the
+file name or any other information that should be stored into the `ir.attachment`
+record.
+
+(TODO explain how `FSFile()` field implementation will extend the `Binary` field
+implementation to allow to deal transparently with `FSFileIByesIO` objects. Not sure if
+it's possible by extending the `Binary` field implementation or if we will have to
+create a new field type from scratch.)
 
 ### fs_image
 
 The `storage.image` addon will be replaced by the new `fs_image` addon. It will at least
 provides a new widget to allow the display of the image content from the url provided by
 the `FSFile` field. If it were not for the automatic thumbnail creation mechanism, this
-module could be summarised as the creation of 2 new fields type: `FSImage()` and
-`FSImageAltName`. The `alt_name` would be a related field to a new the `alt_name` field
-of the `ir.attachment` record behind. The `FSImage` field would be an extension of the
-`FSFile` field with 1 optional parameter: `alt_name_field`.
+module could be summarised as the creation of 1 new field type: `FSImage()` and the
+creation of new `FSImageBytesIO(FSFileBytesIO)` with an additional `alt_name` property.
+
+```python
+
+class FSImageBytesIO(FSFileBytesIO):
+    def __init__(self, ir_attachment: IrAttachment = None) -> None:
+        super().__init__(ir_attachment)
+        self._alt_name = ir_attachment.alt_name if ir_attachment else None
+
+    @property
+    def alt_name(self) -> str:
+        return self._alt_name
+
+    @alt_name.setter
+    def alt_name(self, value: str) -> None:
+        self.dirty = True
+        self._alt_name = value
+
+```
 
 TO BE REFINED
