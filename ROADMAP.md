@@ -237,6 +237,84 @@ implementation to allow to deal transparently with `FSFileIByesIO` objects. Not 
 it's possible by extending the `Binary` field implementation or if we will have to
 create a new field type from scratch.)
 
+The code of the FSFile field could look like the following:
+
+```python
+from odoo import fields
+
+
+class FSFile(fields.Binary):
+    type = "fs_file"
+    storage_code = None
+
+    def __init__(self, string: str, storage_code: str, **kwargs) -> None:
+        kwargs["attachment"] = True
+        super().__init__(string=string, **kwargs)
+        self.storage_code = storage_code
+
+    def convert_to_read(self, value: bytes, record: models.BaseModel,
+                        use_name_get: bool = True) -> str:
+        if value:
+            return value.url
+        return super().convert_to_read(value, record, use_name_get=use_name_get)
+
+    def convert_to_write(self, value: bytes, record: models.BaseModel) -> bytes:
+        raw_value = value
+        if isinstance(value, FSFileBytesIO):
+            raw_value = value.getvalue()
+        return super().convert_to_write(raw_value, record)
+
+    def convert_to_cache(self, value: bytes, record: models.BaseModel,
+                         validate: bool = True) -> bytes:
+        if value is None:
+            return None
+        if isinstance(value, FSFileBytesIO):
+            return value
+        if isinstance(value, bytes):
+            value = FSFileBytesIO()
+            value.write(value)
+            return value
+        return super()._convert_to_cache(value, record, validate=validate)
+
+    def read(self, records):
+        domain = [
+            ('res_model', '=', records._name),
+            ('res_field', '=', self.name),
+            ('res_id', 'in', records.ids),
+        ]
+        data = {
+            att.res_id: FSFileBytesIO(att)
+            for att in recods.env['ir.attachment'].sudo().search(domain)
+        }
+        records.env.cache.insert_missing(records, self,
+                                         map(data.get, records._ids))
+
+    def create(self, record_values):
+      if not record_values:
+            return
+      env = record_values[0][0].env
+      with env.norecompute():
+          ir_attachment = not env['ir.attachment'].sudo().with_context(
+            storage_code=self.storage_code,
+            binary_field_real_user=env.user
+          )
+          for record, value in record_values:
+            if value:
+                value.attachment = ir_attachment.create({
+                    'name': value.name,
+                    'raw': value.getvalue(),
+                    'res_model': record._name,
+                    'res_field': self.name,
+                    'res_id': record.id,
+                    'type': 'binary',
+                })
+                value.dirty = False
+
+      def write(self, records, value):
+          # TODO
+          pass
+```
+
 ### fs_image
 
 The `storage.image` addon will be replaced by the new `fs_image` addon. It will at least
