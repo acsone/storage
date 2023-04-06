@@ -9,17 +9,15 @@ from unittest import mock
 from odoo.tests.common import TransactionCase
 from odoo.tools import mute_logger
 
-from ..models.storage_backend import StorageBackend
+from ..models.fs_storage import FSStorage
 
 
-class TestStorageBackend(TransactionCase):
+class TestFSStorage(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
-        cls.backend: StorageBackend = cls.env.ref(
-            "storage_backend.default_storage_backend"
-        )
+        cls.backend: FSStorage = cls.env.ref("fs_storage.default_fs_storage")
         cls.backend.json_options = {"target_options": {"auto_mkdir": "True"}}
         cls.filedata = base64.b64encode(b"This is a simple file")
         cls.filename = "test_file.txt"
@@ -42,7 +40,7 @@ class TestStorageBackend(TransactionCase):
             # recursively delete the tempdir
             shutil.rmtree(tempdir)
 
-    def _create_file(self, backend: StorageBackend, filename: str, filedata: str):
+    def _create_file(self, backend: FSStorage, filename: str, filedata: str):
         with backend.fs.open(filename, "wb") as f:
             f.write(filedata)
 

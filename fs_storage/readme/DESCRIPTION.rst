@@ -2,7 +2,7 @@ This addon is a technical addon that allows you to define filesystem like
 storage for your data. It's used by other addons to store their data in a
 transparent way into different kind of storages.
 
-Through the storage.backend record, you get access to an object that implements
+Through the fs.storage record, you get access to an object that implements
 the `fsspec.spec.AbstractFileSystem <https://filesystem-spec.readthedocs.io/en/
 latest/api.html#fsspec.spec.AbstractFileSystem>`_ interface and therefore give
 you an unified interface to access your data whatever the storage protocol you
@@ -28,8 +28,8 @@ By default, the addon will install the following protocols:
 * OdooFileSystem
 
 The OdooFileSystem is the one that allows you to store your data into a directory
-mounted into your Odoo's storage directory. This is the default storage backend
-when creating a new storage.backend record.
+mounted into your Odoo's storage directory. This is the default FS Storage
+when creating a new fs.storage record.
 
 Others protocols are available through the installation of additional
 python packages:

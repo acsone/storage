@@ -6,7 +6,7 @@
     "name": "Storage Bakend",
     "summary": "Implement the concept of Storage with amazon S3, sftp...",
     "version": "16.0.1.0.1",
-    "category": "Storage",
+    "category": "FS Storage",
     "website": "https://github.com/OCA/storage",
     "author": " Akretion, ACSONE SA/NV, Odoo Community Association (OCA)",
     "license": "LGPL-3",
@@ -14,7 +14,7 @@
     "installable": True,
     "depends": ["base", "base_sparse_field"],
     "data": [
-        "views/backend_storage_view.xml",
+        "views/fs_storage_view.xml",
         "data/data.xml",
         "security/ir.model.access.csv",
     ],

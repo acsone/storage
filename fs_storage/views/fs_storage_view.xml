@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="storage_backend_view_tree" model="ir.ui.view">
-        <field name="model">storage.backend</field>
+    <record id="fs_storage_view_tree" model="ir.ui.view">
+        <field name="model">fs.storage</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
@@ -9,10 +9,10 @@
             </tree>
         </field>
     </record>
-    <record id="storage_backend_view_form" model="ir.ui.view">
-        <field name="model">storage.backend</field>
+    <record id="fs_storage_view_form" model="ir.ui.view">
+        <field name="model">fs.storage</field>
         <field name="arch" type="xml">
-            <form string="Storage Backend">
+            <form string="FS Storage">
                 <header>
                     <button
                         type="object"
@@ -67,45 +67,45 @@
             </form>
         </field>
     </record>
-    <record id="storage_backend_view_search" model="ir.ui.view">
-        <field name="model">storage.backend</field>
+    <record id="fs_storage_view_search" model="ir.ui.view">
+        <field name="model">fs.storage</field>
         <field name="arch" type="xml">
-            <search string="Storage Backend">
+            <search string="FS Storage">
                 <field name="name" />
             </search>
         </field>
     </record>
-    <record model="ir.actions.act_window" id="act_open_storage_backend_view">
-        <field name="name">Storage Backend</field>
+    <record model="ir.actions.act_window" id="act_open_fs_storage_view">
+        <field name="name">FS Storage</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">storage.backend</field>
+        <field name="res_model">fs.storage</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="storage_backend_view_search" />
+        <field name="search_view_id" ref="fs_storage_view_search" />
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
-    <record model="ir.actions.act_window.view" id="act_open_storage_backend_view_form">
-        <field name="act_window_id" ref="act_open_storage_backend_view" />
+    <record model="ir.actions.act_window.view" id="act_open_fs_storage_view_form">
+        <field name="act_window_id" ref="act_open_fs_storage_view" />
         <field name="sequence" eval="20" />
         <field name="view_mode">form</field>
-        <field name="view_id" ref="storage_backend_view_form" />
+        <field name="view_id" ref="fs_storage_view_form" />
     </record>
-    <record model="ir.actions.act_window.view" id="act_open_storage_backend_view_tree">
-        <field name="act_window_id" ref="act_open_storage_backend_view" />
+    <record model="ir.actions.act_window.view" id="act_open_fs_storage_view_tree">
+        <field name="act_window_id" ref="act_open_fs_storage_view" />
         <field name="sequence" eval="10" />
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="storage_backend_view_tree" />
+        <field name="view_id" ref="fs_storage_view_tree" />
     </record>
     <menuitem
         id="menu_storage"
         parent="base.menu_custom"
         sequence="100"
-        action="act_open_storage_backend_view"
+        action="act_open_fs_storage_view"
     />
     <menuitem
-        id="menu_storage_backend"
+        id="menu_fs_storage"
         parent="menu_storage"
         sequence="10"
-        action="act_open_storage_backend_view"
+        action="act_open_fs_storage_view"
     />
 </odoo>

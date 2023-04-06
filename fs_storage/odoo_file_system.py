@@ -19,7 +19,7 @@ class OdooFileSystem(RootedDirFileSystem):
     Parameters:
         odoo_storage_path: The path of the subdirectory of the Odoo filestore
             directory to mount. This parameter is required and is always provided
-            by the Odoo storage backend even if it is explicitly defined in the
+            by the Odoo FS Storage even if it is explicitly defined in the
             storage options.
         fs: AbstractFileSystem
             An instantiated filesystem to wrap.

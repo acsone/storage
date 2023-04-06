@@ -63,10 +63,10 @@ def deprecated(reason):
     return decorator
 
 
-class StorageBackend(models.Model):
-    _name = "storage.backend"
-    _backend_name = "storage_backend"
-    _description = "Storage Backend"
+class FSStorage(models.Model):
+    _name = "fs.storage"
+    _backend_name = "fs_storage"
+    _description = "FS Storage"
 
     __slots__ = ("__fs", "__odoo_storage_path")
 
