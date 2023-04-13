@@ -4,6 +4,7 @@
 # @author Simone Orsi <simone.orsi@camptocamp.com>
 # Copyright 2023 ACSONE SA/NV (https://www.acsone.eu).
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+from __future__ import annotations
 
 import base64
 import functools
@@ -13,11 +14,11 @@ import logging
 import os.path
 import re
 import warnings
-from typing import AnyStr, List
+from typing import AnyStr
 
 import fsspec
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 from odoo.addons.base_sparse_field.models.fields import Serialized
@@ -76,6 +77,14 @@ class FSStorage(models.Model):
         self.__odoo_storage_path = None
 
     name = fields.Char(required=True)
+    code = fields.Char(
+        required=True,
+        help="Technical code used to identify the storage backend into the code."
+        "This code must be unique. This code is used for example to define the "
+        "storage backend to store the attachments vi the configuration parameter "
+        "'ir_attachment.storage.force.database' when the module 'fs_attachment' "
+        "is installed.",
+    )
     protocol = fields.Selection(
         selection="_get_protocols",
         required=True,
@@ -135,12 +144,70 @@ class FSStorage(models.Model):
         store=False,
     )
 
+    _sql_constraints = [
+        (
+            "code_uniq",
+            "unique(code)",
+            "The code must be unique",
+        ),
+    ]
+
     def write(self, vals):
         self.__fs = None
+        self.clear_caches()
         return super().write(vals)
 
     @api.model
-    def _get_protocols(self) -> List[tuple[str, str]]:
+    @tools.ormcache("code")
+    def get_id_by_code(self, code):
+        """Return the id of the filesystem associated to the given code."""
+        fs_storage = self.search([("code", "=", code)])
+        return fs_storage.id if fs_storage else None
+
+    @api.model
+    def get_by_code(self, code) -> FSStorage:
+        """Return the filesystem associated to the given code."""
+        res = self.browse()
+        res_id = self.get_id_by_code(code)
+        if res_id:
+            res = self.browse(res_id)
+        return res
+
+    @api.model
+    @tools.ormcache()
+    def get_storage_codes(self):
+        """Return the list of codes of the existing filesystems."""
+        return [s.code for s in self.search([])]
+
+    @api.model
+    @tools.ormcache("code", "root")
+    def get_fs_by_code(self, code, root=False):
+        """Return the filesystem associated to the given code.
+
+        :param code: the code of the filesystem
+        :param root: if True, the filesystem is the root filesystem
+                    (when filesystems is nested)
+
+        fsspecs allows to nest filesystems. For example, you can have a
+        filesystem that is based on another filesystem. The best example is
+        when you define a directory filesystem on top of a local filesystem.
+        (IOW all files of the configured filesystem are stored in a directory
+        of the local filesystem).
+        """
+        fs = None
+        fs_storage = self.get_by_code(code)
+        if fs_storage:
+            fs = fs_storage.root_fs if root else fs_storage.fs
+        return fs
+
+    def copy(self, default=None):
+        default = default or {}
+        if "code" not in default:
+            default["code"] = "{}_copy".format(self.code)
+        return super().copy(default)
+
+    @api.model
+    def _get_protocols(self) -> list[tuple[str, str]]:
         protocol = [("odoofs", "Odoo's FileSystem")]
         for p in fsspec.available_protocols():
             try:
@@ -173,7 +240,7 @@ class FSStorage(models.Model):
             rec.protocol_descr = fsspec.get_filesystem_class(rec.protocol).__doc__
 
     @api.model
-    def _get_options_protocol(self) -> List[tuple[str, str]]:
+    def _get_options_protocol(self) -> list[tuple[str, str]]:
         protocol = [("odoofs", "Odoo's Filesystem")]
         for p in fsspec.available_protocols():
             try:
@@ -198,6 +265,23 @@ class FSStorage(models.Model):
         if not self.__fs:
             self.__fs = self._get_filesystem()
         return self.__fs
+
+    @property
+    def root_fs(self) -> fsspec.AbstractFileSystem:
+        """Get the root fsspec filesystem for this backend.
+
+        fsspecs allows to nest filesystems. IOW, you can have a
+        filesystem that is based on another filesystem. The best example is
+        when you define a directory filesystem on top of a local filesystem.
+        (meaning that all files of the configured filesystem are stored in a
+        directory of the local filesystem). The root filesystem is the
+        filesystem that is not based on another filesystem.
+        """
+        self.ensure_one()
+        fs = self.fs
+        while hasattr(fs, "fs"):
+            fs = fs.fs
+        return fs
 
     def _get_filesystem_storage_path(self) -> str:
         """Get the path to the storage directory.
@@ -274,7 +358,7 @@ class FSStorage(models.Model):
         return data
 
     @deprecated("Please use _get_filesystem() instead and the fsspec API directly.")
-    def list_files(self, relative_path="", pattern=False) -> List[str]:
+    def list_files(self, relative_path="", pattern=False) -> list[str]:
         relative_path = relative_path or self.fs.root_marker
         if not self.fs.exists(relative_path):
             return []
@@ -284,7 +368,7 @@ class FSStorage(models.Model):
         return self.fs.ls(relative_path, detail=False)
 
     @deprecated("Please use _get_filesystem() instead and the fsspec API directly.")
-    def find_files(self, pattern, relative_path="", **kw) -> List[str]:
+    def find_files(self, pattern, relative_path="", **kw) -> list[str]:
         """Find files matching given pattern.
 
         :param pattern: regex expression

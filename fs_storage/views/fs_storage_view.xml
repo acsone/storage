@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="fs_storage_view_tree" model="ir.ui.view">
+    <record id="fs_storage_tree_view" model="ir.ui.view">
+        <field name="name">fs.storage.tree (in fs_storage)</field>
         <field name="model">fs.storage</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="code" />
                 <field name="name" />
                 <field name="protocol" />
             </tree>
         </field>
     </record>
-    <record id="fs_storage_view_form" model="ir.ui.view">
+    <record id="fs_storage_form_view" model="ir.ui.view">
+        <field name="name">fs.storage.form (in fs_storage)</field>
         <field name="model">fs.storage</field>
         <field name="arch" type="xml">
             <form string="FS Storage">
@@ -29,6 +32,7 @@
                     </div>
                     <group name="config">
                         <group>
+                        <field name="code" />
                         <field name="protocol" />
                         <field name="directory_path" />
                         <field
@@ -67,11 +71,13 @@
             </form>
         </field>
     </record>
-    <record id="fs_storage_view_search" model="ir.ui.view">
+    <record id="fs_storage_search_view" model="ir.ui.view">
+        <field name="name">fs.storage.search (in fs_storage)</field>
         <field name="model">fs.storage</field>
         <field name="arch" type="xml">
             <search string="FS Storage">
                 <field name="name" />
+                <field name="code" />
             </search>
         </field>
     </record>
@@ -80,7 +86,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">fs.storage</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="fs_storage_view_search" />
+        <field name="search_view_id" ref="fs_storage_search_view" />
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
@@ -88,13 +94,13 @@
         <field name="act_window_id" ref="act_open_fs_storage_view" />
         <field name="sequence" eval="20" />
         <field name="view_mode">form</field>
-        <field name="view_id" ref="fs_storage_view_form" />
+        <field name="view_id" ref="fs_storage_form_view" />
     </record>
     <record model="ir.actions.act_window.view" id="act_open_fs_storage_view_tree">
         <field name="act_window_id" ref="act_open_fs_storage_view" />
         <field name="sequence" eval="10" />
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="fs_storage_view_tree" />
+        <field name="view_id" ref="fs_storage_tree_view" />
     </record>
     <menuitem
         id="menu_storage"

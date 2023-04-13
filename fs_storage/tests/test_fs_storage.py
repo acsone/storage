@@ -1,5 +1,5 @@
 # Copyright 2023 ACSONE SA/NV (http://acsone.eu).
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import base64
 import shutil
 import tempfile
@@ -102,7 +102,9 @@ class TestFSStorage(TransactionCase):
         backend_ids = []
         for i in range(4):
             backend_ids.append(
-                self.backend.create({"name": f"name{i}", "directory_path": f"{i}"}).id
+                self.backend.create(
+                    {"name": f"name{i}", "directory_path": f"{i}", "code": f"code{i}"}
+                ).id
             )
         records = self.backend.browse(backend_ids)
         fs = None
