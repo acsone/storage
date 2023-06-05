@@ -66,7 +66,6 @@ def deprecated(reason):
 
 class FSStorage(models.Model):
     _name = "fs.storage"
-    _backend_name = "fs_storage"
     _description = "FS Storage"
 
     __slots__ = ("__fs", "__odoo_storage_path")
@@ -81,7 +80,7 @@ class FSStorage(models.Model):
         required=True,
         help="Technical code used to identify the storage backend into the code."
         "This code must be unique. This code is used for example to define the "
-        "storage backend to store the attachments vi the configuration parameter "
+        "storage backend to store the attachments via the configuration parameter "
         "'ir_attachment.storage.force.database' when the module 'fs_attachment' "
         "is installed.",
     )
