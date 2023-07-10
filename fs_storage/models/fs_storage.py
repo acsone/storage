@@ -66,6 +66,7 @@ def deprecated(reason):
 
 class FSStorage(models.Model):
     _name = "fs.storage"
+    _inherit = "server.env.mixin"
     _description = "FS Storage"
 
     __slots__ = ("__fs", "__odoo_storage_path")
@@ -151,17 +152,27 @@ class FSStorage(models.Model):
         ),
     ]
 
+    _server_env_section_name_field = "code"
+
+    @property
+    def _server_env_fields(self):
+        return {"protocol": {}, "options": {}, "directory_path": {}}
+
     def write(self, vals):
         self.__fs = None
         self.clear_caches()
         return super().write(vals)
 
     @api.model
-    @tools.ormcache("code")
+    @tools.ormcache()
+    def get_id_by_code_map(self):
+        """Return a dictionary with the code as key and the id as value."""
+        return {rec.code: rec.id for rec in self.search([])}
+
+    @api.model
     def get_id_by_code(self, code):
         """Return the id of the filesystem associated to the given code."""
-        fs_storage = self.search([("code", "=", code)])
-        return fs_storage.id if fs_storage else None
+        return self.get_id_by_code_map().get(code)
 
     @api.model
     def get_by_code(self, code) -> FSStorage:
@@ -179,24 +190,16 @@ class FSStorage(models.Model):
         return [s.code for s in self.search([])]
 
     @api.model
-    @tools.ormcache("code", "root")
-    def get_fs_by_code(self, code, root=False):
+    @tools.ormcache("code")
+    def get_fs_by_code(self, code):
         """Return the filesystem associated to the given code.
 
         :param code: the code of the filesystem
-        :param root: if True, the filesystem is the root filesystem
-                    (when filesystems is nested)
-
-        fsspecs allows to nest filesystems. For example, you can have a
-        filesystem that is based on another filesystem. The best example is
-        when you define a directory filesystem on top of a local filesystem.
-        (IOW all files of the configured filesystem are stored in a directory
-        of the local filesystem).
         """
         fs = None
         fs_storage = self.get_by_code(code)
         if fs_storage:
-            fs = fs_storage.root_fs if root else fs_storage.fs
+            fs = fs_storage.fs
         return fs
 
     def copy(self, default=None):
@@ -264,23 +267,6 @@ class FSStorage(models.Model):
         if not self.__fs:
             self.__fs = self._get_filesystem()
         return self.__fs
-
-    @property
-    def root_fs(self) -> fsspec.AbstractFileSystem:
-        """Get the root fsspec filesystem for this backend.
-
-        fsspecs allows to nest filesystems. IOW, you can have a
-        filesystem that is based on another filesystem. The best example is
-        when you define a directory filesystem on top of a local filesystem.
-        (meaning that all files of the configured filesystem are stored in a
-        directory of the local filesystem). The root filesystem is the
-        filesystem that is not based on another filesystem.
-        """
-        self.ensure_one()
-        fs = self.fs
-        while hasattr(fs, "fs"):
-            fs = fs.fs
-        return fs
 
     def _get_filesystem_storage_path(self) -> str:
         """Get the path to the storage directory.

@@ -3,7 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 {
-    "name": "Storage Bakend",
+    "name": "Filesystem Storage Backend",
     "summary": "Implement the concept of Storage with amazon S3, sftp...",
     "version": "16.0.1.0.1",
     "category": "FS Storage",
@@ -12,7 +12,7 @@
     "license": "LGPL-3",
     "development_status": "Beta",
     "installable": True,
-    "depends": ["base", "base_sparse_field"],
+    "depends": ["base", "base_sparse_field", "server_environment"],
     "data": [
         "views/fs_storage_view.xml",
         "data/data.xml",
