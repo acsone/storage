@@ -1,2 +1,7 @@
 mock
 odoo-test-helper
+odoo-addon-fs-attachment @ git+https://github.com/oca/storage.git@refs/pull/274/head#subdirectory=setup/fs_attachment
+odoo-addon-fs-file @ git+https://github.com/oca/storage.git@refs/pull/274/head#subdirectory=setup/fs_file
+odoo-addon-fs-image @ git+https://github.com/oca/storage.git@refs/pull/274/head#subdirectory=setup/fs_image
+odoo-addon-image-tag @ git+https://github.com/oca/storage.git@refs/pull/276/head#subdirectory=setup/image_tag
+odoo-addon-fs-base-multi-image @ git+https://github.com/oca/storage.git@refs/pull/276/head#subdirectory=setup/fs_base_multi_image
