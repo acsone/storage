@@ -108,7 +108,7 @@ class ThumbnailMixing(models.AbstractModel):
             # storage.thumbnail is not defined as a one2many to this mixin.
             # As consequence, the ORM is not able to trigger the invalidation
             # of thumbnail_ids on our mixin
-            self.thumbnail_ids.refresh()
+            self.thumbnail_ids.invalidate_recordset()
         return thumbnail
 
     def generate_odoo_thumbnail(self):
