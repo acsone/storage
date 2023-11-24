@@ -151,3 +151,13 @@ class TestFSStorage(TransactionCase):
             .get("target_options")
             .get("odoo_storage_path"),
         )
+
+    def test_options_env(self):
+        self.backend.json_options = {"key": "$KEY_VAR"}
+        eval_json_options = {"key": "TEST"}
+        options = self.backend._get_fs_options()
+        self.assertDictEqual(options, self.backend.json_options)
+        self.backend.eval_options_from_env = True
+        with mock.patch.dict("os.environ", {"KEY_VAR": "TEST"}):
+            options = self.backend._get_fs_options()
+            self.assertDictEqual(options, eval_json_options)
