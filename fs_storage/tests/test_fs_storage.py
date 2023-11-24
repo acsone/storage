@@ -151,3 +151,22 @@ class TestFSStorage(TransactionCase):
             .get("target_options")
             .get("odoo_storage_path"),
         )
+
+    def test_options_env(self):
+        self.backend.json_options = {"key": {"sub_key": "$KEY_VAR"}}
+        eval_json_options = {"key": {"sub_key": "TEST"}}
+        options = self.backend._get_fs_options()
+        self.assertDictEqual(options, self.backend.json_options)
+        self.backend.eval_options_from_env = True
+        with mock.patch.dict("os.environ", {"KEY_VAR": "TEST"}):
+            options = self.backend._get_fs_options()
+            self.assertDictEqual(options, eval_json_options)
+        with self.assertLogs(level="WARNING") as log:
+            options = self.backend._get_fs_options()
+        self.assertIn(
+            (
+                f"Environment variable KEY_VAR is not set for "
+                f"fs_storage {self.backend.display_name}."
+            ),
+            log.output[0],
+        )
