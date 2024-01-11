@@ -117,8 +117,9 @@ class ThumbnailMixing(models.AbstractModel):
         self_sudo._get_medium_thumbnail()
         return True
 
-    @api.model
-    def create(self, vals):
-        record = super().create(vals)
-        record.generate_odoo_thumbnail()
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            record.generate_odoo_thumbnail()
         return record

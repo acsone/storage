@@ -70,15 +70,21 @@ class StorageThumbnail(models.Model):
             self.env, "storage.thumbnail.backend_id"
         )
 
-    @api.model
-    def create(self, vals):
-        vals["file_type"] = self._default_file_type
-        if "backend_id" not in vals:
-            vals["backend_id"] = self._get_default_backend_id()
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._pre_process_create(vals)
+        return super().create(vals_list)
 
     def unlink(self):
         files = self.mapped("file_id")
         result = super().unlink()
         files.unlink()
         return result
+
+    @api.model
+    def _pre_process_create(self, vals):
+        vals["file_type"] = self._default_file_type
+        if "backend_id" not in vals:
+            vals["backend_id"] = self._get_default_backend_id()
+        return vals
