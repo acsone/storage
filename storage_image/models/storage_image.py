@@ -42,12 +42,11 @@ class StorageImage(models.Model):
                 for char in ["-", "_"]:
                     record.alt_name = record.alt_name.replace(char, " ")
 
-    @api.model
-    def create(self, vals):
-        vals["file_type"] = self._default_file_type
-        if "backend_id" not in vals:
-            vals["backend_id"] = self._get_default_backend_id()
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._pre_process_create(vals)
+        return super().create(vals_list)
 
     def _get_default_backend_id(self):
         return self.env["storage.backend"]._get_backend_id_from_param(
@@ -58,3 +57,10 @@ class StorageImage(models.Model):
         files = self.mapped("file_id")
         thumbnails = self.mapped("thumbnail_ids")
         return super().unlink() and thumbnails.unlink() and files.unlink()
+
+    @api.model
+    def _pre_process_create(self, vals):
+        vals["file_type"] = self._default_file_type
+        if "backend_id" not in vals:
+            vals["backend_id"] = self._get_default_backend_id()
+        return vals
