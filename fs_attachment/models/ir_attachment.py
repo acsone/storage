@@ -371,7 +371,7 @@ class IrAttachment(models.Model):
         try:
             with fs.open(fname, "rb") as f:
                 return f.read()
-        except IOError:
+        except OSError:
             _logger.info(
                 "Error reading %s on storage %s", fname, _storage, exc_info=True
             )
