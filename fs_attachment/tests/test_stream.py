@@ -108,7 +108,10 @@ class TestStream(HttpCase):
             },
             assert_content=self.content,
         )
-        url = f"/web/content/{self.attachment_binary.id}/?filename=test2.txt&mimetype=text/csv"
+        url = (
+            f"/web/content/{self.attachment_binary.id}/"
+            "?filename=test2.txt&mimetype=text/csv"
+        )
         self.assertDownload(
             url,
             headers={},
