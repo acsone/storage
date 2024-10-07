@@ -326,10 +326,11 @@ class TestFsStorage(TestFSAttachmentCommon):
 
     def test_recompute_urls(self):
         """
-        Mark temp_backend as default and set its base_url.
-        Create one attachment in temp_backend that is linked to a field and one that is not.
-        * Check that after updating the base_url for the backend, executing recompute_urls
-        updates fs_url for both attachments, whether they are linked to a field or not
+        Mark temp_backend as default and set its base_url. Create one attachment
+        in temp_backend that is linked to a field and one that is not. * Check
+        that after updating the base_url for the backend, executing
+        recompute_urls updates fs_url for both attachments, whether they are
+        linked to a field or not
         """
         self.temp_backend.base_url = "https://acsone.eu/media"
         self.temp_backend.use_as_default_for_attachments = True
