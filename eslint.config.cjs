@@ -16,7 +16,8 @@ const config = [{
             openerp: "readonly",
             owl: "readonly",
             luxon: "readonly",
-        },
+            window: true,
+	},
 
         ecmaVersion: 2024,
         sourceType: "script",
