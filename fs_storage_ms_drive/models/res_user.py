@@ -12,17 +12,17 @@ class ResUsers(models.Model):
         self.ensure_one()
         get_param = self.env["ir.config_parameter"].sudo().get_param
         return {
-            "client_id": get_param("microsoft_sharepoint_client_id"),
-            "client_secret": get_param("microsoft_sharepoint_client_secret"),
-            "scope": get_param("sharepoint_microsoft_client_scope"),
+            "client_id": get_param("microsoft_drive_client_id"),
+            "client_secret": get_param("microsoft_drive_client_secret"),
+            "scope": get_param("drive_microsoft_client_scope"),
             "token_endpoint": get_param("microsoft_account.token_endpoint"),
         }
 
     def _get_oauth2_params(self):
         self.ensure_one()
-        access_token = self.microsoft_sharepoint_token
-        rtoken = self.microsoft_sharepoint_rtoken
-        expires_at = int(self.microsoft_sharepoint_token_validity.timestamp())
+        access_token = self.microsoft_drive_token
+        rtoken = self.microsoft_drive_rtoken
+        expires_at = int(self.microsoft_drive_token_validity.timestamp())
         token = {
             "access_token": access_token,
             "refresh_token": rtoken,
