@@ -147,9 +147,19 @@ patch(FsFolder.prototype, {
         if (this.isMSGD && definition && Array.isArray(definition)) {
             // First we remove the 'uid' field if it exists
             definition = definition.filter((item) => item.name !== "uid");
-            // Then we add the the createdBy field and modifiedBy field
+            // Then we add the description, the createdBy field and modifiedBy field
             definition.push({
                 sequence: 30,
+                name: "description",
+                type: "char",
+                optional: true,
+                string: _t("Description"),
+                value: (record) => {
+                    return record?.item_info?.description || "";
+                },
+            });
+            definition.push({
+                sequence: 35,
                 name: "createdBy",
                 type: "char",
                 optional: true,
