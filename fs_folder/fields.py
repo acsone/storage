@@ -7,7 +7,8 @@ from functools import partial
 
 import fsspec
 
-from odoo import SUPERUSER_ID, api, fields, models, registry
+from odoo import SUPERUSER_ID, api, fields, models
+from odoo.modules.registry import Registry
 from odoo.tools.misc import SENTINEL, Sentinel
 from odoo.tools.sql import pg_varchar
 
@@ -353,7 +354,7 @@ class FsFolder(AbstractFsContentField):
             fs.mkdir(path, **kwargs)
 
             def clean_up_folder(path, storage_code, dbname):
-                db_registry = registry(dbname)
+                db_registry = Registry(dbname)
                 with db_registry.cursor() as cr:
                     env = api.Environment(cr, SUPERUSER_ID, {})
                     fs = env["fs.storage"].get_fs_by_code(storage_code)

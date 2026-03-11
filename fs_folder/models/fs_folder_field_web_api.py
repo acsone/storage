@@ -7,7 +7,7 @@ import urllib
 import fsspec
 from werkzeug import Response
 
-from odoo import _, api, models
+from odoo import api, models
 from odoo.exceptions import AccessError
 
 from ..fs_stream import FsStream
@@ -31,10 +31,10 @@ class FsFolderFieldWebApi(models.AbstractModel):
         :param access: the access rights to check
         """
         if res_model not in self.env:
-            raise AccessError(_("Unknown model"))
+            raise AccessError(self.env._("Unknown model"))
         record = self.env[res_model].browse(res_id)
         if field_name not in record._fields:
-            raise AccessError(_("Unknown field"))
+            raise AccessError(self.env._("Unknown field"))
         record.check_access(access)
 
     @api.model
@@ -76,7 +76,9 @@ class FsFolderFieldWebApi(models.AbstractModel):
         if field.type == "fs_folder":
             fs = record[field_name].fs
         if not fs:
-            raise ValueError(_("The field is not an external filesystem field."))
+            raise ValueError(
+                self.env._("The field is not an external filesystem field.")
+            )
         return fs
 
     @api.model
