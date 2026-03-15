@@ -3,7 +3,7 @@
 import shutil
 import tempfile
 
-from odoo_test_helper import FakeModelLoader
+# from odoo_test_helper import FakeModelLoader
 
 from odoo.tests.common import TransactionCase
 
