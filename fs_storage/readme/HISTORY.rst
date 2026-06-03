@@ -39,3 +39,11 @@
   to be a tuple not a list. Since our config is loaded from a json file, we
   cannot use tuples. The fix converts the list to a tuple when the config is
   related to a webdav protocol and the auth option is into the confix. (`#285 <https://github.com/OCA/storage/issues/285>`_)
+
+
+16.0.2.0.0 (2026-06-03)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+**Features**
+
+- Remove the dependancy of server_environment module and make fs_storage_environment a bridge between fs_storage and server_environment modules.
