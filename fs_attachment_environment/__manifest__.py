@@ -10,7 +10,7 @@
     "author": " ACSONE SA/NV, Dixmit, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "development_status": "Beta",
-    "installable": True,
+    "installable": False,
     "depends": ["fs_storage_environment", "fs_attachment"],
     "data": [],
     "auto_install": True,
