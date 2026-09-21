@@ -3,13 +3,20 @@ exclude: |
   # NOT INSTALLABLE ADDONS
   ^fs_attachment/|
   ^fs_attachment_environment/|
+  ^fs_attachment_s3/|
   ^fs_attachment_s3_environment/|
   ^fs_base_multi_image/|
   ^fs_base_multi_media/|
+  ^fs_file/|
+  ^fs_file_demo/|
   ^fs_image/|
   ^fs_image_thumbnail/|
+  ^fs_product_brand_multi_image/|
   ^fs_product_multi_image/|
+  ^fs_product_multi_media/|
+  ^fs_product_public_category_multi_image/|
   ^fs_storage/|
+  ^fs_storage_backup/|
   ^fs_storage_backup_environment/|
   ^fs_storage_environment/|
   ^image_tag/|
@@ -62,6 +69,9 @@ repos:
     rev: v1.3
     hooks:
       - id: whool-init
+        additional_dependencies:
+          # Odoo 20 is supported since manifestoo-core v1.16.0
+          - manifestoo-core>=v1.16.1
   - repo: https://github.com/oca/maintainer-tools
     rev: 31bdbd8e4cb94be6534f0e82b1cafb84a455f671
     hooks:
@@ -83,6 +93,8 @@ repos:
     rev: v0.2.27
     hooks:
       - id: oca-checks-odoo-module
+        args:
+          - --fix
       - id: oca-checks-po
         args:
           - --disable=po-pretty-format

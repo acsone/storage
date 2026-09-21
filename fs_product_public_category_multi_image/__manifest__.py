@@ -17,4 +17,5 @@
     ],
     "demo": [],
     "development_status": "Beta",
+    "installable": False,
 }

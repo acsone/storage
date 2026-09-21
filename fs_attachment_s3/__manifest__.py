@@ -18,4 +18,5 @@
         "views/fs_storage.xml",
     ],
     "maintainers": ["lmignon"],
+    "installable": False,
 }

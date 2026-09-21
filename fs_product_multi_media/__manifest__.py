@@ -22,4 +22,5 @@
     "demo": [],
     "maintainers": ["lmignon"],
     "development_status": "Beta",
+    "installable": False,
 }

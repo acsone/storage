@@ -19,4 +19,5 @@
             "fs_file/static/src/**/*",
         ],
     },
+    "installable": False,
 }

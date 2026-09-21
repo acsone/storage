@@ -11,4 +11,5 @@
         "data/mail_message_subtype_data.xml",
         "views/fs_storage_view.xml",
     ],
+    "installable": False,
 }
