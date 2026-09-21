@@ -16,4 +16,5 @@
         "views/image_tag.xml",
     ],
     "demo": [],
+    "installable": False,
 }

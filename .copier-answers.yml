@@ -1,8 +1,9 @@
 # Do NOT update manually; changes here will be overwritten by Copier
-_commit: 956e371f4158890e01355a3e3626d8632a6c4640
+_commit: 10940f7
 _src_path: gh:dixmit/oca-addons-repo-template
-convert_readme_fragments_to_markdown: false
-enable_checklog_odoo: false
+additional_ruff_rules: []
+convert_readme_fragments_to_markdown: true
+enable_checklog_odoo: true
 generate_requirements_txt: true
 github_check_license: true
 github_ci_extra_env: {}
@@ -12,7 +13,7 @@ github_enable_stale_action: true
 github_enforce_dev_status_compatibility: true
 include_wkhtmltopdf: false
 odoo_test_flavor: Both
-odoo_version: 16.0
+odoo_version: 20.0
 org_name: Odoo Community Association (OCA)
 org_slug: OCA
 postgres_image: ''
@@ -21,6 +22,6 @@ repo_description: 'TODO: add repo description.'
 repo_name: storage
 repo_slug: storage
 repo_website: https://github.com/OCA/storage
-use_pyproject_toml: false
-use_ruff: false
+use_pyproject_toml: true
+use_ruff: true
 

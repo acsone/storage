@@ -2,11 +2,11 @@
 [![Support the OCA](https://odoo-community.org/readme-banner-image)](https://odoo-community.org/get-involved?utm_source=repo-readme)
 
 # storage
-[![Runboat](https://img.shields.io/badge/runboat-Try%20me-875A7B.png)](https://runboat.odoo-community.org/builds?repo=OCA/storage&target_branch=16.0)
-[![Pre-commit Status](https://github.com/OCA/storage/actions/workflows/pre-commit.yml/badge.svg?branch=16.0)](https://github.com/OCA/storage/actions/workflows/pre-commit.yml?query=branch%3A16.0)
-[![Build Status](https://github.com/OCA/storage/actions/workflows/test.yml/badge.svg?branch=16.0)](https://github.com/OCA/storage/actions/workflows/test.yml?query=branch%3A16.0)
-[![codecov](https://codecov.io/gh/OCA/storage/branch/16.0/graph/badge.svg)](https://codecov.io/gh/OCA/storage)
-[![Translation Status](https://translation.odoo-community.org/widgets/storage-16-0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/storage-16-0/?utm_source=widget)
+[![Runboat](https://img.shields.io/badge/runboat-Try%20me-875A7B.png)](https://runboat.odoo-community.org/builds?repo=OCA/storage&target_branch=20.0)
+[![Pre-commit Status](https://github.com/OCA/storage/actions/workflows/pre-commit.yml/badge.svg?branch=20.0)](https://github.com/OCA/storage/actions/workflows/pre-commit.yml?query=branch%3A20.0)
+[![Build Status](https://github.com/OCA/storage/actions/workflows/test.yml/badge.svg?branch=20.0)](https://github.com/OCA/storage/actions/workflows/test.yml?query=branch%3A20.0)
+[![codecov](https://codecov.io/gh/OCA/storage/branch/20.0/graph/badge.svg)](https://codecov.io/gh/OCA/storage)
+[![Translation Status](https://translation.odoo-community.org/widgets/storage-20-0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/storage-20-0/?utm_source=widget)
 
 <!-- /!\ do not modify above this line -->
 

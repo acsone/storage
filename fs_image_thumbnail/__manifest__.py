@@ -20,4 +20,5 @@
     "maintainers": ["lmignon"],
     "development_status": "Beta",
     "external_dependencies": {"python": ["python_slugify"]},
+    "installable": False,
 }

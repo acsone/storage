@@ -1,3 +1,2 @@
 # generated from manifests external_dependencies
 fsspec[s3]
-python_slugify
