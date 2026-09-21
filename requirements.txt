@@ -1,2 +1,2 @@
 # generated from manifests external_dependencies
-fsspec[s3]
+fsspec>=2024.5.0

@@ -15,7 +15,6 @@ exclude: |
   ^fs_product_multi_image/|
   ^fs_product_multi_media/|
   ^fs_product_public_category_multi_image/|
-  ^fs_storage/|
   ^fs_storage_backup/|
   ^fs_storage_backup_environment/|
   ^fs_storage_environment/|

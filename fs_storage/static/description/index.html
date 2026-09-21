@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils: https://docutils.sourceforge.io/" />
-<title>README.rst</title>
+<title>Filesystem Storage Backend</title>
 <style type="text/css">
 
 /*
@@ -374,16 +374,18 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:1f585ecd248ce63d35596b35153294b0816df9d2b18b7289f57c7b0f39a0ee6a
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/license-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/storage/tree/16.0/fs_storage"><img alt="OCA/storage" src="https://img.shields.io/badge/github-OCA%2Fstorage-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/storage-16-0/storage-16-0-fs_storage"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/storage&amp;target_branch=16.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This addon is a technical addon that allows you to define filesystem like
-storage for your data. It’s used by other addons to store their data in a
-transparent way into different kind of storages.</p>
-<p>Through the fs.storage record, you get access to an object that implements
-the <a class="reference external" href="https://filesystem-spec.readthedocs.io/en/latest/api.html#fsspec.spec.AbstractFileSystem">fsspec.spec.AbstractFileSystem</a> interface and therefore give
-you an unified interface to access your data whatever the storage protocol you
-decide to use.</p>
-<p>The list of supported protocols depends on the installed fsspec implementations.
-By default, the addon will install the following protocols:</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/license-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/storage/tree/20.0/fs_storage"><img alt="OCA/storage" src="https://img.shields.io/badge/github-OCA%2Fstorage-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/storage-20-0/storage-20-0-fs_storage"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/storage&amp;target_branch=20.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This addon is a technical addon that allows you to define filesystem
+like storage for your data. It’s used by other addons to store their
+data in a transparent way into different kind of storages.</p>
+<p>Through the fs.storage record, you get access to an object that
+implements the <a class="reference external" href="fsspec">fsspec.spec.AbstractFileSystem
+&lt;</a><a class="reference external" href="https://filesystem-spec.readthedocs.io/en/">https://filesystem-spec.readthedocs.io/en/</a><a class="reference external" href="fsspec">latest/api.html#fsspec.spec.AbstractFileSystem&gt;</a>
+interface and therefore give you an unified interface to access your
+data whatever the storage protocol you decide to use.</p>
+<p>The list of supported protocols depends on the installed fsspec
+implementations. By default, the addon will install the following
+protocols:</p>
 <ul class="simple">
 <li>LocalFileSystem</li>
 <li>MemoryFileSystem</li>
@@ -401,38 +403,39 @@ By default, the addon will install the following protocols:</p>
 <li>JupiterFileSystem</li>
 <li>OdooFileSystem</li>
 </ul>
-<p>The OdooFileSystem is the one that allows you to store your data into a directory
-mounted into your Odoo’s storage directory. This is the default FS Storage
-when creating a new fs.storage record.</p>
+<p>The OdooFileSystem is the one that allows you to store your data into a
+directory mounted into your Odoo’s storage directory. This is the
+default FS Storage when creating a new fs.storage record.</p>
 <p>Others protocols are available through the installation of additional
 python packages:</p>
 <ul class="simple">
-<li>DropboxDriveFileSystem -&gt; <cite>pip install fsspec[dropbox]</cite></li>
-<li>HTTPFileSystem -&gt; <cite>pip install fsspec[http]</cite></li>
-<li>HTTPSFileSystem -&gt; <cite>pip install fsspec[http]</cite></li>
-<li>GCSFileSystem -&gt; <cite>pip install fsspec[gcs]</cite></li>
-<li>GSFileSystem -&gt; <cite>pip install fsspec[gs]</cite></li>
-<li>GoogleDriveFileSystem -&gt; <cite>pip install gdrivefs</cite></li>
-<li>SFTPFileSystem -&gt; <cite>pip install fsspec[sftp]</cite></li>
-<li>HaddoopFileSystem -&gt; <cite>pip install fsspec[hdfs]</cite></li>
-<li>S3FileSystem -&gt; <cite>pip install fsspec[s3]</cite></li>
-<li>WandbFS -&gt; <cite>pip install wandbfs</cite></li>
-<li>OCIFileSystem -&gt; <cite>pip install fsspec[oci]</cite></li>
-<li>AsyncLocalFileSystem -&gt; <cite>pip install ‘morefs[asynclocalfs]</cite></li>
-<li>AzureDatalakeFileSystem -&gt; <cite>pip install fsspec[adl]</cite></li>
-<li>AzureBlobFileSystem -&gt; <cite>pip install fsspec[abfs]</cite></li>
-<li>DaskWorkerFileSystem -&gt; <cite>pip install fsspec[dask]</cite></li>
-<li>GitFileSystem -&gt; <cite>pip install fsspec[git]</cite></li>
-<li>SMBFileSystem -&gt; <cite>pip install fsspec[smb]</cite></li>
-<li>LibArchiveFileSystem -&gt; <cite>pip install fsspec[libarchive]</cite></li>
-<li>OSSFileSystem -&gt; <cite>pip install ossfs</cite></li>
-<li>WebdavFileSystem -&gt; <cite>pip install webdav4</cite></li>
-<li>DVCFileSystem -&gt; <cite>pip install dvc</cite></li>
-<li>XRootDFileSystem -&gt; <cite>pip install fsspec-xrootd</cite></li>
+<li>DropboxDriveFileSystem -&gt; pip install fsspec[dropbox]</li>
+<li>HTTPFileSystem -&gt; pip install fsspec[http]</li>
+<li>HTTPSFileSystem -&gt; pip install fsspec[http]</li>
+<li>GCSFileSystem -&gt; pip install fsspec[gcs]</li>
+<li>GSFileSystem -&gt; pip install fsspec[gs]</li>
+<li>GoogleDriveFileSystem -&gt; pip install gdrivefs</li>
+<li>SFTPFileSystem -&gt; pip install fsspec[sftp]</li>
+<li>HaddoopFileSystem -&gt; pip install fsspec[hdfs]</li>
+<li>S3FileSystem -&gt; pip install fsspec[s3]</li>
+<li>WandbFS -&gt; pip install wandbfs</li>
+<li>OCIFileSystem -&gt; pip install fsspec[oci]</li>
+<li>AsyncLocalFileSystem -&gt; pip install ‘morefs[asynclocalfs]</li>
+<li>AzureDatalakeFileSystem -&gt; pip install fsspec[adl]</li>
+<li>AzureBlobFileSystem -&gt; pip install fsspec[abfs]</li>
+<li>DaskWorkerFileSystem -&gt; pip install fsspec[dask]</li>
+<li>GitFileSystem -&gt; pip install fsspec[git]</li>
+<li>SMBFileSystem -&gt; pip install fsspec[smb]</li>
+<li>LibArchiveFileSystem -&gt; pip install fsspec[libarchive]</li>
+<li>OSSFileSystem -&gt; pip install ossfs</li>
+<li>WebdavFileSystem -&gt; pip install webdav4</li>
+<li>DVCFileSystem -&gt; pip install dvc</li>
+<li>XRootDFileSystem -&gt; pip install fsspec-xrootd</li>
 </ul>
-<p>This list of supported protocols is not exhaustive or could change in the future
-depending on the fsspec releases. You can find more information about the
-supported protocols on the <a class="reference external" href="https://filesystem-spec.readthedocs.io/en/latest/api.html#fsspec.spec.AbstractFileSystem">fsspec documentation</a>.</p>
+<p>This list of supported protocols is not exhaustive or could change in
+the future depending on the fsspec releases. You can find more
+information about the supported protocols on the <a class="reference external" href="https://filesystem-spec.readthedocs.io/en/latest/api.html#fsspec.spec.AbstractFileSystem">fsspec
+documentation</a>.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -466,36 +469,42 @@ supported protocols on the <a class="reference external" href="https://filesyste
 <ul class="simple">
 <li>The name of the backend. This is the name that will be used to
 identify the backend into Odoo</li>
-<li>The code of the backend. This code will identify the backend into the store_fname
-field of the ir.attachment model. This code must be unique. It will be used
-as scheme. example of the store_fname field: <tt class="docutils literal"><span class="pre">odoofs://abs34Tg11</span></tt>.</li>
+<li>The code of the backend. This code will identify the backend into the
+store_fname field of the ir.attachment model. This code must be
+unique. It will be used as scheme. example of the store_fname field:
+<tt class="docutils literal"><span class="pre">odoofs://abs34Tg11</span></tt>.</li>
 <li>The protocol used by the backend. The protocol refers to the supported
 protocols of the fsspec python package.</li>
-<li>A directory path. This is a root directory from which the filesystem will
-be mounted. This directory must exist.</li>
+<li>A directory path. This is a root directory from which the filesystem
+will be mounted. This directory must exist.</li>
 <li>The protocol options. These are the options that will be passed to the
-fsspec python package when creating the filesystem. These options depend
-on the protocol used and are described in the fsspec documentation.</li>
-<li>Resolve env vars. This options resolves the protocol options values starting
-with $ from environment variables</li>
-<li>Check Connection Method. If set, Odoo will always check the connection before using
-a storage and it will remove the fs connection from the cache if the check fails.<ul>
-<li><tt class="docutils literal">Create Marker file</tt> : create a hidden file on remote and then check it exists with
-Use it if you have write access to the remote and if it is not an issue to leave
-the marker file in the root directory.</li>
-<li><tt class="docutils literal">List file</tt> : list all files from the root directory. You can use it if the directory
-path does not contain a big list of files (for performance reasons)</li>
+fsspec python package when creating the filesystem. These options
+depend on the protocol used and are described in the fsspec
+documentation.</li>
+<li>Resolve env vars. This options resolves the protocol options values
+starting with $ from environment variables</li>
+<li>Check Connection Method. If set, Odoo will always check the connection
+before using a storage and it will remove the fs connection from the
+cache if the check fails.<ul>
+<li><tt class="docutils literal">Create Marker file</tt> : create a hidden file on remote and then
+check it exists with Use it if you have write access to the remote
+and if it is not an issue to leave the marker file in the root
+directory.</li>
+<li><tt class="docutils literal">List file</tt> : list all files from the root directory. You can use
+it if the directory path does not contain a big list of files (for
+performance reasons)</li>
 </ul>
 </li>
 </ul>
 <p>Some protocols defined in the fsspec package are wrappers around other
 protocols. For example, the SimpleCacheFileSystem protocol is a wrapper
-around any local filesystem protocol. In such cases, you must specify into the
-protocol options the protocol to be wrapped and the options to be passed to
-the wrapped protocol.</p>
-<p>For example, if you want to create a backend that uses the SimpleCacheFileSystem
-protocol, after selecting the SimpleCacheFileSystem protocol, you must specify
-the protocol options as follows:</p>
+around any local filesystem protocol. In such cases, you must specify
+into the protocol options the protocol to be wrapped and the options to
+be passed to the wrapped protocol.</p>
+<p>For example, if you want to create a backend that uses the
+SimpleCacheFileSystem protocol, after selecting the
+SimpleCacheFileSystem protocol, you must specify the protocol options as
+follows:</p>
 <pre class="code python literal-block">
 <span class="p">{</span><span class="w">
 </span>    <span class="s2">&quot;directory_path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_backend&quot;</span><span class="p">,</span><span class="w">
@@ -503,22 +512,23 @@ the protocol options as follows:</p>
 </span>    <span class="s2">&quot;target_options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span><span class="w">
 </span><span class="p">}</span>
 </pre>
-<p>In this example, the SimpleCacheFileSystem protocol will be used as a wrapper
-around the odoofs protocol.</p>
+<p>In this example, the SimpleCacheFileSystem protocol will be used as a
+wrapper around the odoofs protocol.</p>
 </div>
 </div>
 <div class="section" id="known-issues-roadmap">
 <h2><a class="toc-backref" href="#toc-entry-3">Known issues / Roadmap</a></h2>
 <ul class="simple">
-<li>Transactions: fsspec comes with a transactional mechanism that once started,
-gathers all the files created during the transaction, and if the transaction
-is committed, moves them to their final locations. It would be useful to
-bridge this with the transactional mechanism of odoo. This would allow to
-ensure that all the files created during a transaction are either all
-moved to their final locations, or all deleted if the transaction is rolled
-back. This mechanism is only valid for files created during the transaction
-by a call to the <cite>open</cite> method of the file system. It is not valid for others
-operations, such as <cite>rm</cite>, <cite>mv_file</cite>, … .</li>
+<li>Transactions: fsspec comes with a transactional mechanism that once
+started, gathers all the files created during the transaction, and if
+the transaction is committed, moves them to their final locations. It
+would be useful to bridge this with the transactional mechanism of
+odoo. This would allow to ensure that all the files created during a
+transaction are either all moved to their final locations, or all
+deleted if the transaction is rolled back. This mechanism is only
+valid for files created during the transaction by a call to the open
+method of the file system. It is not valid for others operations, such
+as rm, mv_file, … .</li>
 </ul>
 </div>
 <div class="section" id="changelog">
@@ -527,38 +537,47 @@ operations, such as <cite>rm</cite>, <cite>mv_file</cite>, … .</li>
 <h3><a class="toc-backref" href="#toc-entry-5">16.0.1.5.0 (2026-05-26)</a></h3>
 <p><strong>Features</strong></p>
 <ul class="simple">
-<li>Replace {db_name} by the database name in directory_path (<a class="reference external" href="https://github.com/OCA/storage/issues/db_name">#db_name</a>)</li>
+<li>Replace {db_name} by the database name in directory_path
+(<a class="reference external" href="https://github.com/OCA/storage/issues/db_name">#db_name</a>)</li>
 </ul>
 </div>
 <div class="section" id="section-2">
 <h3><a class="toc-backref" href="#toc-entry-6">16.0.1.2.0 (2024-02-06)</a></h3>
 <p><strong>Features</strong></p>
 <ul class="simple">
-<li>Invalidate FS filesystem object cache when the connection fails, forcing a reconnection. (<a class="reference external" href="https://github.com/OCA/storage/issues/320">#320</a>)</li>
+<li>Invalidate FS filesystem object cache when the connection fails,
+forcing a reconnection.
+(<a class="reference external" href="https://github.com/OCA/storage/issues/320">#320</a>)</li>
 </ul>
 </div>
 <div class="section" id="section-3">
 <h3><a class="toc-backref" href="#toc-entry-7">16.0.1.1.0 (2023-12-22)</a></h3>
 <p><strong>Features</strong></p>
 <ul class="simple">
-<li>Add parameter on storage backend to resolve protocol options values starting with $ from environment variables (<a class="reference external" href="https://github.com/OCA/storage/issues/303">#303</a>)</li>
+<li>Add parameter on storage backend to resolve protocol options values
+starting with $ from environment variables
+(<a class="reference external" href="https://github.com/OCA/storage/issues/303">#303</a>)</li>
 </ul>
 </div>
 <div class="section" id="section-4">
 <h3><a class="toc-backref" href="#toc-entry-8">16.0.1.0.3 (2023-10-17)</a></h3>
 <p><strong>Bugfixes</strong></p>
 <ul class="simple">
-<li>Fix access to technical models to be able to upload attachments for users with basic access (<a class="reference external" href="https://github.com/OCA/storage/issues/289">#289</a>)</li>
+<li>Fix access to technical models to be able to upload attachments for
+users with basic access
+(<a class="reference external" href="https://github.com/OCA/storage/issues/289">#289</a>)</li>
 </ul>
 </div>
 <div class="section" id="section-5">
 <h3><a class="toc-backref" href="#toc-entry-9">16.0.1.0.2 (2023-10-09)</a></h3>
 <p><strong>Bugfixes</strong></p>
 <ul class="simple">
-<li>Avoid config error when using the webdav protocol. The auth option is expected
-to be a tuple not a list. Since our config is loaded from a json file, we
-cannot use tuples. The fix converts the list to a tuple when the config is
-related to a webdav protocol and the auth option is into the confix. (<a class="reference external" href="https://github.com/OCA/storage/issues/285">#285</a>)</li>
+<li>Avoid config error when using the webdav protocol. The auth option is
+expected to be a tuple not a list. Since our config is loaded from a
+json file, we cannot use tuples. The fix converts the list to a tuple
+when the config is related to a webdav protocol and the auth option is
+into the confix.
+(<a class="reference external" href="https://github.com/OCA/storage/issues/285">#285</a>)</li>
 </ul>
 </div>
 </div>
@@ -567,7 +586,7 @@ related to a webdav protocol and the auth option is into the confix. (<a class="
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/storage/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/storage/issues/new?body=module:%20fs_storage%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/storage/issues/new?body=module:%20fs_storage%0Aversion:%2020.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
@@ -595,7 +614,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/storage/tree/16.0/fs_storage">OCA/storage</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/storage/tree/20.0/fs_storage">OCA/storage</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
 </div>
 </div>
