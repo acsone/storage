@@ -171,6 +171,8 @@ class AbstractFsContentField(fields.Field):
             return None
         if isinstance(value, self._value_type):
             return value.stored_value
+        if isinstance(value, dict):
+            return value.get("stored_value")
         return super().convert_to_cache(value, record, validate)
 
     def convert_to_record(self, value, record):
@@ -187,6 +189,7 @@ class AbstractFsContentField(fields.Field):
                 "ref": value.ref,
                 "storage_code": value.storage_code,
                 "protocol": value.protocol,
+                "stored_value": value.stored_value,
             }
         raise ValueError(
             f"Invalid value for {self.name}: {repr(value)}\n"

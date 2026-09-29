@@ -109,11 +109,21 @@ class TestFields(FsFolderTestCase):
                 "ref": "folder_name1",
                 "storage_code": "tmp_dir",
                 "protocol": ("file", "local"),
+                "stored_value": "tmp_dir://folder_name1",
             },
         )
         record = self.fs_test_model.create({"name": "folder_name2"})
         values = self.fs_test_model.browse(record.id).read(["fs_folder"])[0]
         self.assertFalse(values["fs_folder"])
+
+    def test_fs_folder_read_value_back_to_cache(self):
+        parent = self.fs_test_model.create({"name": "folder_parent"})
+        parent.fs_folder1.initialize()
+        read_value = parent.read(["fs_folder1"])[0]["fs_folder1"]
+        record = self.fs_test_model_related.new(
+            {"name": "folder_name", "fs_folder1": read_value}
+        )
+        self.assertEqual(record.fs_folder1.stored_value, parent.fs_folder1.stored_value)
 
     def test_fs_folder_name_sanitiez(self):
         record = self.fs_test_model.create({"name": "folder/name"})
