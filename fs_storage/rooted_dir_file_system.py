@@ -3,6 +3,7 @@
 
 import ntpath
 import posixpath
+from pathlib import PurePosixPath, PureWindowsPath
 
 from fsspec.implementations.dirfs import DirFileSystem
 from fsspec.registry import register_implementation
@@ -19,37 +20,70 @@ class RootedDirFileSystem(DirFileSystem):
     This one should be provided by fsspec itself. We should propose a PR.
     """
 
+    def _posix_normpath_shadow_traversal(self, path: str) -> str:
+        """Normalize posix path that contains '..\\' which
+        are not taken into account by the standard lib posixpath.normpath
+        but are resolved by os and therefore could lead to shadow path
+        traversal"""
+
+        current = path
+
+        # current root/storate/test/..\\toto/file.txt
+        while "..\\" in current:
+            idx = current.find("..\\")
+
+            # bedore '..\\' root/storate/test/
+            before = current[:idx]
+            # after '..\\' 'toto/file.txt'
+            after = current[idx + 3 :]
+
+            # We normalize the before part by adding  '..' to neutralize its effect
+            if before:
+                resolved_before = posixpath.normpath(posixpath.join(before, ".."))
+                if resolved_before == ".":
+                    resolved_before = ""
+            else:
+                resolved_before = ".."
+
+            # We rebuild the expectd path
+            current = posixpath.join(resolved_before, "\\" + after)
+
+            # removes superfuleus slashes
+            current = posixpath.normpath(current)
+
+        return current
+
     def _join(self, path):
         joined = super()._join(path)
-        # DirFileSystem joins a list or a dict of paths by calling this method
-        # on each of them, so each one is already checked.
         if not isinstance(joined, str):
             return joined
-        # Ensure that the path is a subpath of the root path by resolving
-        # any relative paths.
-        # The paths may belong to a remote filesystem, so they are normalized
-        # as strings.
+        # Uses the rigth path abstraction according to the
+        # path separator
         if self.sep == "/":
-            # A backslash is part of a name on most filesystems, but fsspec
-            # turns it into a slash in local paths on Windows: the path must
-            # stay inside the root under both rules.
-            os_paths = (posixpath, ntpath)
+            PathClass = PurePosixPath
+            normpath = posixpath.normpath
         elif self.sep == "\\":
-            os_paths = (ntpath,)
+            PathClass = PureWindowsPath
+            normpath = ntpath.normpath
         else:
             raise ValueError(f"Unknown path separator: {self.sep!r}")
-        for os_path in os_paths:
-            rnorm = os_path.normpath(self.path)
-            jnorm = os_path.normpath(joined)
-            # Compare whole path components, so that a sibling such as
-            # "root-backup" is outside "root". A root such as "/" already ends
-            # with the separator.
-            prefix = rnorm if rnorm.endswith(os_path.sep) else rnorm + os_path.sep
-            if not (jnorm == rnorm or jnorm.startswith(prefix)):
-                raise PermissionError(
-                    f"Path {path!r} resolves to {jnorm!r} which is outside "
-                    f"the root path {rnorm!r}"
-                )
+
+        root = PathClass(self.path)
+        joined_path = PathClass(joined)
+
+        rnorm = normpath(str(root))
+        jnorm = normpath(str(joined_path))
+
+        if self.sep == "/":
+            jnorm = self._posix_normpath_shadow_traversal(jnorm)
+
+        prefix = rnorm if rnorm.endswith(self.sep) else rnorm + self.sep
+        if not (jnorm == rnorm or jnorm.startswith(prefix)):
+            raise PermissionError(
+                f"Path {path!r} resolves to {jnorm!r} which is outside "
+                f"the root path {rnorm!r}"
+            )
+
         return joined
 
 
